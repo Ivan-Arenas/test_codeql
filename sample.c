@@ -29,6 +29,19 @@ int main(int argc, char** argv) {
     }
 
     char cmd[BUFSIZE] = {0};
-    sprintf(cmd,"wc -c < %s", fileName);
-    system(cmd);
+    snprintf(cmd, BUFSIZE, "wc -c < %s", fileName);
+
+    FILE *fp = popen(cmd, "r");
+    if (fp == NULL) {
+        fprintf(stderr, "Failed to run command.\n");
+        return -1;
+    }
+
+    char result[BUFSIZE];
+    if (fgets(result, sizeof(result), fp) != NULL) {
+        printf("File size: %s", result);
+    }
+
+    pclose(fp);
+    return 0;
 }
